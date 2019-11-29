@@ -17,18 +17,25 @@ sheet = wb[wb.sheetnames[0]]
 print('--------------------------------------------------')
 print('-----------答题开始，请关闭单词Excel--------------')
 
-
+epoch_null = False
 cols = ['B','C','D']
 allAnswers = [i for i in range(2,sheet.max_row+1)]
 for epoch in range(10000):
-    if epoch%20 == 0:
+    if epoch%7 == 0 or epoch_null:
+        epoch_null = False
         epoch_answers = random.sample(allAnswers, 30) 
     q = random.sample(cols, 2) 
     answers = []
     for i in epoch_answers:
-        n = max(0,sheet['G'+str(i)].value-sheet['F'+str(i)].value) + 1
+        if sheet['F'+str(i)].value >= 1:
+            continue
+        n = max(0,sheet['G'+str(i)].value) + 1
         for j in range(n):
             answers.append(i)
+    print(len(answers))
+    if not answers:
+        epoch_null = True
+        continue
     row = random.choice(answers)
     wrongAnswers = [i for i in epoch_answers]
     del wrongAnswers[wrongAnswers.index(row)]#删除正确的答案
@@ -36,7 +43,7 @@ for epoch in range(10000):
     answersOptions=wrongAnswers+[row,]#将正确答案和错误答案连接起来
     random.shuffle(answersOptions)#打乱四个答案的顺序
     print('--------------------------------------------------')
-    print('问题:  '+sheet[q[0]+str(row)].value)
+    print('问题'+str(epoch+1)+':  '+sheet[q[0]+str(row)].value)
     print('1.'+sheet[q[1]+str(answersOptions[0])].value)
     print('2.'+sheet[q[1]+str(answersOptions[1])].value)
     print('3.'+sheet[q[1]+str(answersOptions[2])].value)
