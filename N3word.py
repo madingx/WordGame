@@ -14,7 +14,7 @@ def mywords():
     truecnt = 0
     falsecnt = 0
     while 1:
-        a = random.sample(range(1,ws.max_row+1), 4)
+        a = random.sample(range(2,ws.max_row+2), 4)
         word = ws[a[0]]
         random.shuffle(a)
         print('------第',cnt+1,'题------')
@@ -26,6 +26,7 @@ def mywords():
         while 1:
             try:
                 n = int(input('\n请选择答案编号,退出请按0:'))
+                if n<=0 or n >4 :continue
                 break
             except:
                 print('编号错误')
