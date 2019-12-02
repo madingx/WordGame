@@ -27,9 +27,9 @@ for epoch in range(10000):
     q = random.sample(cols, 2) 
     answers = []
     for i in epoch_answers:
-        if sheet['G'+str(i)].value >= 1:
-            continue
-        n = max(0,sheet['H'+str(i)].value) + 1
+        # if sheet['G'+str(i)].value >= 1:
+        #     continue
+        n = max(1,sheet['H'+str(i)].value - sheet['G'+str(i)].value//2  + 5)
         for j in range(n):
             answers.append(i)
     #print(len(answers))
