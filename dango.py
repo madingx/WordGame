@@ -2,7 +2,7 @@ from openpyxl import *
 import random
 
 
-filename = 'N2核心词汇.xlsx'
+filename = 'N2N1核心词汇.xlsx'
 
 # 读取.xlsx文件
 wb = load_workbook(filename)
@@ -18,7 +18,7 @@ print('--------------------------------------------------')
 print('-----------答题开始，请关闭单词Excel--------------')
 
 epoch_null = False
-cols = ['B','C','D']
+cols = ['C','D','E']
 allAnswers = [i for i in range(2,sheet.max_row+1)]
 for epoch in range(10000):
     if epoch%7 == 0 or epoch_null:
@@ -27,12 +27,12 @@ for epoch in range(10000):
     q = random.sample(cols, 2) 
     answers = []
     for i in epoch_answers:
-        if sheet['F'+str(i)].value >= 1:
+        if sheet['G'+str(i)].value >= 1:
             continue
-        n = max(0,sheet['G'+str(i)].value) + 1
+        n = max(0,sheet['H'+str(i)].value) + 1
         for j in range(n):
             answers.append(i)
-    print(len(answers))
+    #print(len(answers))
     if not answers:
         epoch_null = True
         continue
@@ -57,13 +57,18 @@ for epoch in range(10000):
             pass
     if(row == answersOptions[ans-1]):
         print('\033[92m答对了！\33[0m')
-        sheet['F'+str(row)].value += 1
+        sheet['G'+str(row)].value += 1
         wb.save(filename)
 
     else:
         print('\033[91m答错了!\33[0m')
-        sheet['G'+str(row)].value += 1
+        sheet['H'+str(row)].value += 1
         wb.save(filename)
 
-    print(sheet['B'+str(row)].value,',',sheet['C'+str(row)].value,',',sheet['D'+str(row)].value,)
-    print(sheet['H'+str(row)].value,',',sheet['I'+str(row)].value,',',sheet['J'+str(row)].value,)
+    print('['+sheet['A'+str(row)].value+']  '+sheet['C'+str(row)].value+'('+sheet['D'+str(row)].value+')',\
+          '\033[94m['+sheet['I'+str(row)].value+']  \33[0m',sheet['E'+str(row)].value)
+    print(sheet['J'+str(row)].value,' / ',sheet['K'+str(row)].value,)
+
+
+
+# 出现频率：  常错 > 未背 > 常对 
