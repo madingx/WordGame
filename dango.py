@@ -1,6 +1,6 @@
 from openpyxl import *
 import random
-
+import time
 
 filename = 'N2N1核心词汇.xlsx'
 
@@ -21,22 +21,23 @@ epoch_null = False
 cols = ['C','D','E']
 allAnswers = [i for i in range(2,sheet.max_row+1)]
 for epoch in range(10000):
-    if epoch%7 == 0 or epoch_null:
+    if epoch%12 == 0 or epoch_null:
         epoch_null = False
         epoch_answers = random.sample(allAnswers, 30) 
+    begin_time = time.clock()
     q = random.sample(cols, 2) 
-    answers = []
-    for i in epoch_answers:
-        # if sheet['G'+str(i)].value >= 1:
-        #     continue
-        n = max(1,sheet['H'+str(i)].value - sheet['G'+str(i)].value//2  + 5)
-        for j in range(n):
-            answers.append(i)
-    #print(len(answers))
-    if not answers:
-        epoch_null = True
-        continue
-    row = random.choice(answers)
+
+    weights = [max(1,sheet['H'+str(i)].value*2 - sheet['G'+str(i)].value  + 10) for i in epoch_answers]
+    r = random.randint(1,sum(weights) + 1)
+    s = 0
+    row = 0
+    for i,j in enumerate(weights):
+        s += j
+        if s >= r:
+            row = epoch_answers[i]
+            #print(j,sum(weights)/len(weights))
+            break
+
     wrongAnswers = [i for i in epoch_answers]
     del wrongAnswers[wrongAnswers.index(row)]#删除正确的答案
     wrongAnswers=random.sample(wrongAnswers,3)#随机选取三个错误答案
@@ -48,9 +49,11 @@ for epoch in range(10000):
     print('2.'+sheet[q[1]+str(answersOptions[1])].value)
     print('3.'+sheet[q[1]+str(answersOptions[2])].value)
     print('4.'+sheet[q[1]+str(answersOptions[3])].value)
+    end_time = time.clock()
+    #print('use time ',(end_time-begin_time))
     while 1:
         try:
-            ans = int(input())
+            ans = int(input('你的选择： '))
             break
         except:
             print('请输入1-4的有效数字~')
@@ -65,8 +68,9 @@ for epoch in range(10000):
         sheet['H'+str(row)].value += 1
         wb.save(filename)
 
-    print('['+sheet['A'+str(row)].value+']  '+sheet['C'+str(row)].value+'('+sheet['D'+str(row)].value+')',\
-          '\033[94m['+sheet['I'+str(row)].value+']  \33[0m',sheet['E'+str(row)].value)
+    print('['+sheet['A'+str(row)].value+']  '+sheet['C'+str(row)].value+'('+sheet['D'+str(row)].value+')',
+          '\033[94m['+sheet['I'+str(row)].value+']  \33[0m',sheet['E'+str(row)].value,
+           sheet['G'+str(row)].value,'/',sheet['H'+str(row)].value)
     print(sheet['J'+str(row)].value,' / ',sheet['K'+str(row)].value,)
 
 
